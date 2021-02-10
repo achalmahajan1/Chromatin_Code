@@ -9,7 +9,7 @@ aoc, boc = ratio of a/c and b/c (= 1 for a sphere)
 k_on/k_off = on and off rate of the molecular motors
 
 # Prerequisites
-gfortran; OpemMPI, and STKFMM master as a dependency: https://github.com/wenyan4work/STKFMM. Install STKFMM and compile test codes.
+gfortran; OpemMPI, and STKFMM as a dependency: https://github.com/wenyan4work/STKFMM. Install STKFMM and compile test codes. The instructions are available on the github page (feel free to reach out if you have any questions). I am also planning to add a simple version of the code to evaluate surface traction forces on an arbitraty domain.
 
 # Compilation
 Compiling the code is a straigt forward process: make
