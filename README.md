@@ -20,7 +20,10 @@ Each subroutine/functions performs specific functions. Here are the details of i
 4. Geo_Val.f90: For calculating the surface normal on each surface grid. Again, this is not required for this problem specifically as we are dealing with a single layer potential, and the surface is rigid, but for problems where the surface deforms, we might need to evaluate the surface normal/tangent in order to dynamically move the surface.
 5. Green_fs.f90: This function evaluates the surface integral of any vector field on the surface. 
 6. InitConfig/Initdip.f90: Initilaize the chain inside the bounding domain. Here, I have initialized the chain as a random walk configuration on the surface of the sphere. I am also planning to add the part where the chain can be initialized as a fractal globule.
-
+7. Interp.f90: This function interpolates the vector field on the right triangle in (eta-zeta) plane where the surface integrals are performed.
+8. Leonard_jones.f90: This function evaluates the repulsive forces used to avoid crossing of the chain. Again the name is misleading because it's a generic third power repulsive potential and has nothing with Leonard Jones potential. 
+9. gasdev.90: Random number generator for Brownian forces.
+10. sgf_3d_fs.f90: This function calculate the greens functions (Stokeslet and Stresslet as well for the pressure).
 # Compilation
 Compiling the code is a straigt forward process: make
 
