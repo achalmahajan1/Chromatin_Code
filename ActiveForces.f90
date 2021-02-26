@@ -1,4 +1,5 @@
-SUBROUTINE ActiveForces(x,y,z) !IF
+SUBROUTINE ActiveForces(x,y,z) 
+!Subroutine to calculate the active forces
         USE Variables
         IMPLICIT NONE
                 INTEGER*8 :: i, j, k
