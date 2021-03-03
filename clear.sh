@@ -1,0 +1,11 @@
+rm *.*~
+rm *.png
+rm *.dat
+rm Ext_mod
+rm Ext_mod2
+rm *.avi
+rm *.mat
+rm *.eps
+rm nohup.out
+rm *.o
+rm *.pdb

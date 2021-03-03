@@ -1,9 +1,8 @@
-SUBROUTINE Geo_val(nelm,npts)
-        USE Variables
+SUBROUTINE Geo_val(nelm,npts,vna,n,alpha,beta,gamma1,p1)
         IMPLICIT NONE
-                INTEGER*8 :: npts,i1,i2,i3,i4,i5,i6,nelm,m,k,i,itally(npts)
-                REAL*8 :: al,be,ga,alc,bec,gac,&
-                           xxi(6), eet(6), xi, eta, par,vx(6),vy(6),vz(6),DxDxi,DyDxi,DzDxi,DxDet,&
+                INTEGER*8 :: npts,i1,i2,i3,i4,i5,i6,n(5120,6),nelm,m,k,i,itally(npts)
+                REAL*8 :: vna(npts,3),alpha(nelm),beta(nelm),gamma1(nelm),al,be,ga,alc,bec,gac,&
+                           xxi(6), eet(6), xi, eta, par,p1(10242,3),vx(6),vy(6),vz(6),DxDxi,DyDxi,DzDxi,DxDet,&
                            DyDet,DzDet,hxi,het,hs,x,y,z
                
 !============================================
@@ -45,13 +44,13 @@ SUBROUTINE Geo_val(nelm,npts)
 
 !-----
 
-        DO k = 1,nelm
-                i1 = nn(k,1)
-                i2 = nn(k,2)
-                i3 = nn(k,3)
-                i4 = nn(k,4)
-                i5 = nn(k,5)
-                i6 = nn(k,6)
+        DO k=1,nelm
+                i1 = n(k,1)
+                i2 = n(k,2)
+                i3 = n(k,3)
+                i4 = n(k,4)
+                i5 = n(k,5)
+                i6 = n(k,6)
                 al  = alpha(k)
                 be  = beta(k)
                 ga  = gamma1(k)
@@ -80,15 +79,17 @@ SUBROUTINE Geo_val(nelm,npts)
                         DO i=1,6
                                 xi  = xxi(i)
                                 eta = eet(i)
-                                CALL interp(p(i1,1),p(i1,2),p(i1,3),p(i2,1),p(i2,2),p(i2,3),p(i3,1),&
-                   p(i3,2),p(i3,3),p(i4,1),p(i4,2),p(i4,3),p(i5,1),p(i5,2),p(i5,3),p(i6,1),p(i6,2),p(i6,3)&
+                               CALL interp(p1(i1,1),p1(i1,2),p1(i1,3),p1(i2,1),p1(i2,2),p1(i2,3),p1(i3,1),&
+                   p1(i3,2),p1(i3,3),p1(i4,1),p1(i4,2),p1(i4,3),p1(i5,1),p1(i5,2),p1(i5,3),p1(i6,1),p1(i6,2),p1(i6,3)&
                                 ,al,be,ga,xi,eta,x,y,z,DxDxi,DyDxi,DzDxi,DxDet,DyDet,&
                                         DzDet,vx(i),vy(i),vz(i),hs)
-                                m = nn(k,i)
+                                m = n(k,i)
                                 vna(m,1) = vna(m,1) + vx(i)
                                 vna(m,2) = vna(m,2) + vy(i)
                                 vna(m,3) = vna(m,3) + vz(i)
                                 itally(m) = itally(m)+1
+                                !PRINT*,p1(i1,1),p1(i2,1),xi,eta
+                                !PAUSE
                         ENDDO
                         
 
@@ -97,19 +98,22 @@ SUBROUTINE Geo_val(nelm,npts)
 ! averaged normal vector
 !-----------------------
 
-                DO i=1,npts
+      DO i=1,npts
 
-                        par = DFLOAT(itally(i))
+        par = float(itally(i))
 
-                        vna(i,1) = vna(i,1)/par
-                        vna(i,2) = vna(i,2)/par
-                        vna(i,3) = vna(i,3)/par
-                        par = DSQRT( vna(i,1)**2+vna(i,2)**2+vna(i,3)**2 )
+        vna(i,1) = vna(i,1)/par
+        vna(i,2) = vna(i,2)/par
+        vna(i,3) = vna(i,3)/par
+        !PRINT*,m,par,vna(i,1),vna(i,2),vna(i,3)
+        !PAUSE
+        par = sqrt( vna(i,1)**2+vna(i,2)**2+vna(i,3)**2 )
 
-                        vna(i,1) = vna(i,1)/par
-                        vna(i,2) = vna(i,2)/par
-                        vna(i,3) = vna(i,3)/par
-                END DO
+        vna(i,1) = vna(i,1)/par
+        vna(i,2) = vna(i,2)/par
+        vna(i,3) = vna(i,3)/par
+      END DO
+        !PAUSE
 !-----
 ! Done
 !-----

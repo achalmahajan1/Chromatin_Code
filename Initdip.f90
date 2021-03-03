@@ -1,9 +1,8 @@
-SUBROUTINE Initdip
-        USE Variables
+SUBROUTINE Initdip(trel,kon,koff,tswitch,dip,N,Nc)
         IMPLICIT NONE
-                INTEGER*8 :: i,j
-                REAL*8 :: con
-
+                INTEGER*8 :: i, j, N, Nc, dip(N,Nc)
+                REAL*8 :: con, trel(N,Nc), tswitch(N,Nc),kon,koff
+                REAL*4 :: rand
 ! Loop over chains
                 DO i = 1,Nc
 
@@ -24,5 +23,4 @@ SUBROUTINE Initdip
                                         ENDIF
                         ENDDO
                 ENDDO
-                PRINT*, dip, trel, tswitch
 END SUBROUTINE Initdip

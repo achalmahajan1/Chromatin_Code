@@ -1,11 +1,16 @@
-SUBROUTINE ActiveForces(x,y,z) 
-!Subroutine to calculate the active forces
-        USE Variables
+SUBROUTINE ActiveForces(x,y,z,Fdpx,Fdpy,Fdpz,Fdpxa,Fdpya,Fdpza,N,Nc,kon,koff,dip,trel1,tswitch)
         IMPLICIT NONE
-                INTEGER*8 :: i, j, k
-                REAL*8 ::num
-                REAL*8 :: x(N,Nc), y(N,Nc), z(N,Nc)
+                INTEGER*8 :: N, i, j, k, Nc
+                INTEGER*8 :: dip(N,Nc)
+                REAL*4 :: rand
+                REAL*8 :: kon,koff,Fm, num, leng
+                REAL*8 :: trel1(N,Nc),tswitch(N,Nc)
+                REAL*8 :: Fdpx(N,Nc), Fdpy(N,Nc), Fdpz(N,Nc), Fdpxa(N,Nc), Fdpya(N,Nc), &
+                                Fdpza(N,Nc), x(N,Nc), y(N,Nc), z(N,Nc)
 
+! Active force magnitude (negative for contractile)
+                Fm = 0.d0
+                leng = 0.d0
 ! Initialize force vector
                 !DO i = 1,Nc
                                 Fdpx = 0.d0
@@ -19,8 +24,9 @@ SUBROUTINE ActiveForces(x,y,z)
 ! Loop over links, update dipole states if needed
                 DO i = 1,Nc
                         DO j = 1,N
-                                IF (trel(j,i) .GT. tswitch(j,i))THEN
-                                        trel(j,i) = 0.d0
+                                IF (trel1(j,i) .GT. tswitch(j,i))THEN
+                                        trel1(j,i) = 0.d0
+                                                !PRINT*,"YES", trel1(j), j, dip(j)
                                                 num = 0.d0
                                                 IF (dip(j,i) .EQ. 0)THEN
                                                         dip(j,i) = 1.d0
@@ -38,25 +44,26 @@ SUBROUTINE ActiveForces(x,y,z)
                                 ENDIF
                         ENDDO
                 ENDDO
-                !dip = 1.d0
 ! Update force density based on dipole states
                 DO i = 1,Nc
                         DO j = 2,N-1
                                k = SIGN(1.d0,0.5d0 - rand(0))        
                                IF(k .EQ. -1)THEN
-                                        Fdpx(j,i) = Fdpx(j,i)+k*Fm*dip(j,i)*(x(j+1,i) - x(j,i))
-                                        Fdpy(j,i) = Fdpy(j,i)+k*Fm*dip(j,i)*(y(j+1,i) - y(j,i))
-                                        Fdpz(j,i) = Fdpz(j,i)+k*Fm*dip(j,i)*(z(j+1,i) - z(j,i))         
-                                        Fdpxa(j+1,i) = Fdpxa(j+1,i)+Fm*dip(j,i)*(x(j+1,i) - x(j,i))
-                                        Fdpya(j+1,i) = Fdpya(j+1,i)+Fm*dip(j,i)*(y(j+1,i) - y(j,i))
-                                        Fdpza(j+1,i) = Fdpza(j+1,i)+Fm*dip(j,i)*(z(j+1,i) - z(j,i))
+                                   leng = DSQRT((x(j+1,i)-x(j,i))**2.d0+(y(j+1,i)-y(j,i))**2.d0+(z(j+1,i)-z(j,i))**2.d0)
+                                        Fdpx(j,i) = Fdpx(j,i)+k*Fm*dip(j,i)*(x(j+1,i) - x(j,i))/leng
+                                        Fdpy(j,i) = Fdpy(j,i)+k*Fm*dip(j,i)*(y(j+1,i) - y(j,i))/leng
+                                        Fdpz(j,i) = Fdpz(j,i)+k*Fm*dip(j,i)*(z(j+1,i) - z(j,i))/leng         
+                                        Fdpxa(j+1,i) = Fdpxa(j+1,i)+Fm*dip(j,i)*(x(j+1,i) - x(j,i))/leng
+                                        Fdpya(j+1,i) = Fdpya(j+1,i)+Fm*dip(j,i)*(y(j+1,i) - y(j,i))/leng
+                                        Fdpza(j+1,i) = Fdpza(j+1,i)+Fm*dip(j,i)*(z(j+1,i) - z(j,i))/leng
                                 ELSE
-                                        Fdpx(j,i) = Fdpx(j,i)+k*Fm*dip(j,i)*(x(j,i) - x(j-1,i))
-                                        Fdpy(j,i) = Fdpy(j,i)+k*Fm*dip(j,i)*(y(j,i) - y(j-1,i))
-                                        Fdpz(j,i) = Fdpz(j,i)+k*Fm*dip(j,i)*(z(j,i) - z(j-1,i))
-                                        Fdpxa(j-1,i) = Fdpxa(j-1,i)-Fm*dip(j,i)*(x(j,i) - x(j-1,i))
-                                        Fdpya(j-1,i) = Fdpya(j-1,i)-Fm*dip(j,i)*(y(j,i) - y(j-1,i))
-                                        Fdpza(j-1,i) = Fdpza(j-1,i)-Fm*dip(j,i)*(z(j,i) - z(j-1,i))
+                                   leng = DSQRT((x(j,i)-x(j-1,i))**2.d0+(y(j,i)-y(j-1,i))**2.d0+(z(j,i)-z(j-1,i))**2.d0)     
+                                        Fdpx(j,i) = Fdpx(j,i)+k*Fm*dip(j,i)*(x(j,i) - x(j-1,i))/leng
+                                        Fdpy(j,i) = Fdpy(j,i)+k*Fm*dip(j,i)*(y(j,i) - y(j-1,i))/leng
+                                        Fdpz(j,i) = Fdpz(j,i)+k*Fm*dip(j,i)*(z(j,i) - z(j-1,i))/leng
+                                        Fdpxa(j-1,i) = Fdpxa(j-1,i)-Fm*dip(j,i)*(x(j,i) - x(j-1,i))/leng
+                                        Fdpya(j-1,i) = Fdpya(j-1,i)-Fm*dip(j,i)*(y(j,i) - y(j-1,i))/leng
+                                        Fdpza(j-1,i) = Fdpza(j-1,i)-Fm*dip(j,i)*(z(j,i) - z(j-1,i))/leng
 
                                 ENDIF       
                         ENDDO

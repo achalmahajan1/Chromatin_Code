@@ -1,5 +1,6 @@
 SUBROUTINE interp(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,al,be,ga,xi,eta&
                   ,x,y,z,DxDxi,DyDxi,DzDxi,DxDet,DyDet,DzDet,vnx,vny,vnz,hs)
+
         IMPLICIT NONE
                 REAL*8 :: alc, bec, gac, alalc, bebec, gagac, al, be, ga, ph1, ph2, ph3, ph4, ph5, ph6, x,&
                           y, z, x1, y1, z1, x2, y2, z2, x5, y5, z5, x3, y3, z3, x4, y4, z4, x6, y6, z6, dph1,&
@@ -60,7 +61,8 @@ SUBROUTINE interp(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,al,be,ga
       x = x1*ph1 + x2*ph2 + x3*ph3 + x4*ph4 + x5*ph5 + x6*ph6
       y = y1*ph1 + y2*ph2 + y3*ph3 + y4*ph4 + y5*ph5 + y6*ph6
       z = z1*ph1 + z2*ph2 + z3*ph3 + z4*ph4 + z5*ph5 + z6*ph6
-
+        !PRINT*,"Interp inside",x,y,z,ph3
+        !PAUSE
 !------------------------------
       !if(Ichoose.eq.1) Go to 99
 !------------------------------
@@ -115,6 +117,7 @@ SUBROUTINE interp(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,al,be,ga
       vnz = DxDxi * DyDet - DxDet * DyDxi
 
       hs = DSQRT(vnx*vnx + vny*vny + vnz*vnz)
+        !PRINT*,"inter inside",hs
 !---
 !  normalization
 !---
@@ -127,5 +130,6 @@ SUBROUTINE interp(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5,x6,y6,z6,al,be,ga
 ! done
 !-----
 
+  !99  continue
 
 END SUBROUTINE interp
