@@ -26,6 +26,9 @@ Each subroutine/functions performs specific functions. Here are the details of i
 8. Leonard_jones.f90: This function evaluates the repulsive forces used to avoid crossing of the chain. Again the name is misleading because it's a generic third power repulsive potential and has nothing with Leonard Jones potential. 
 9. gasdev.90: Random number generator for Brownian forces.
 10. sgf_3d_fs.f90: This function calculate the greens functions (Stokeslet and Stresslet as well for the pressure).
+
+Initconfig directory contains the initial configuration data files for 23 polymer (chromatin) chains. Each chain is initialized as a random walk on a sphere and then placed systematically inside the ellipsoidal nucleus.
+
 # Compilation
 Compiling the code is a straigt forward process: make
 
