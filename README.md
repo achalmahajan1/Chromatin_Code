@@ -30,6 +30,6 @@ Each subroutine/functions performs specific functions. Here are the details of i
 Initconfig directory contains the initial configuration data files for 23 polymer (chromatin) chains. Each chain is initialized as a random walk on a sphere and then placed systematically inside the ellipsoidal nucleus.
 
 # Compilation
-Compiling the code is a straigt forward process: make
+Compiling the code is a straigt forward process: make (Make sure to change the files path accordingly).
 
 
